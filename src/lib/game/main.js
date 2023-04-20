@@ -26,6 +26,13 @@ MyGame = ig.Game.extend({
 		// Initialize main level
 		this.loadLevel(LevelTestR);
 		// Initialize your game here; bind keys etc.
+		this.bindKeys();
+
+		// camera
+		this.setupCamera();
+	},
+
+	bindKeys: function() {
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		ig.input.bind( ig.KEY.UP_ARROW, 'up' );
@@ -35,11 +42,12 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.S, 'down' );
 		ig.input.bind( ig.KEY.A, 'left' );
 		ig.input.bind( ig.KEY.D, 'right' );
+	},
 
-		// camera
-    this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
-		this.camera.trap.size.x = ig.system.width/6;
-		this.camera.trap.size.y = ig.system.height/6;
+	setupCamera: function() {
+		this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
+		this.camera.trap.size.x = ig.system.width/2;
+		this.camera.trap.size.y = ig.system.height/2;
 		this.camera.lookAhead.x = ig.system.width/3;
 		this.camera.lookAhead.y = ig.system.height/3;
 		this.camera.max.x = this.collisionMap.pxWidth - ig.system.width;
