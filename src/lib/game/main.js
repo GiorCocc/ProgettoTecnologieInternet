@@ -3,7 +3,9 @@ ig.module(
 )
 .requires(
 	'impact.game',
-	'impact.font'
+	'impact.font',
+	'impact.debug.debug',
+	'game.levels.test'
 )
 .defines(function(){
 
@@ -11,10 +13,23 @@ MyGame = ig.Game.extend({
 	
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
+
+	gravity: 300,
 	
 	
 	init: function() {
+		// Initialize main level
+		this.loadLevel(LevelTest);
 		// Initialize your game here; bind keys etc.
+		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
+		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
+		ig.input.bind( ig.KEY.UP_ARROW, 'up' );
+		ig.input.bind( ig.KEY.DOWN_ARROW, 'down' );
+
+		ig.input.bind( ig.KEY.W, 'up' );
+		ig.input.bind( ig.KEY.S, 'down' );
+		ig.input.bind( ig.KEY.A, 'left' );
+		ig.input.bind( ig.KEY.D, 'right' );
 	},
 	
 	update: function() {
@@ -33,7 +48,7 @@ MyGame = ig.Game.extend({
 		var x = ig.system.width/2,
 			y = ig.system.height/2;
 		
-		this.font.draw( 'Sembra che tutto funzioni!', x, y, ig.Font.ALIGN.CENTER );
+		//this.font.draw( 'Sembra che tutto funzioni!', x, y, ig.Font.ALIGN.CENTER );
 	}
 });
 
