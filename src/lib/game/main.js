@@ -5,9 +5,14 @@ ig.module(
 	'impact.game',
 	'impact.font',
 	'impact.debug.debug',
-	'game.levels.test'
+
+	'game.levels.testR', 
+
+	'plugins.camera'
 )
 .defines(function(){
+
+	var log = console.log.bind(console);
 
 MyGame = ig.Game.extend({
 	
@@ -19,7 +24,7 @@ MyGame = ig.Game.extend({
 	
 	init: function() {
 		// Initialize main level
-		this.loadLevel(LevelTest);
+		this.loadLevel(LevelTestR);
 		// Initialize your game here; bind keys etc.
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
@@ -30,6 +35,16 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.S, 'down' );
 		ig.input.bind( ig.KEY.A, 'left' );
 		ig.input.bind( ig.KEY.D, 'right' );
+
+		// camera
+    this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
+		this.camera.trap.size.x = ig.system.width/6;
+		this.camera.trap.size.y = ig.system.height/6;
+		this.camera.lookAhead.x = ig.system.width/3;
+		this.camera.lookAhead.y = ig.system.height/3;
+		this.camera.max.x = this.collisionMap.pxWidth - ig.system.width;
+    this.camera.max.y = this.collisionMap.pxHeight - ig.system.height;
+    this.camera.set( this.getEntitiesByType(EntityPlayer)[0]);
 	},
 	
 	update: function() {
@@ -37,6 +52,7 @@ MyGame = ig.Game.extend({
 		this.parent();
 		
 		// Add your own, additional update code here
+		this.camera.follow(this.getEntitiesByType(EntityPlayer)[0]);
 	},
 	
 	draw: function() {
