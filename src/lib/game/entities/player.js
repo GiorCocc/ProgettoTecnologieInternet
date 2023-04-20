@@ -8,7 +8,8 @@ ig.module(
 
     EntityPlayer = ig.Entity.extend({
 
-        size: { x: 32, y: 32 },
+        size: { x: 11, y: 16 },
+        offset: { x: 10, y: 12 },
         collides: ig.Entity.COLLIDES.PASSIVE,
 
         animSheet: new ig.AnimationSheet('media/arthurPendragon_.png', 32, 32),
