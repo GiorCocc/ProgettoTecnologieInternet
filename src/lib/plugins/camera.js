@@ -26,15 +26,16 @@ ig.Camera = ig.Class.extend({
 	},
 	
 	
-    set: function( entity ) {
+  set: function( entity ) {
 		this.trap.pos.x = entity.pos.x - this.trap.size.x / 2;
 		this.trap.pos.y = entity.pos.y + entity.size.y - this.trap.size.y;
 
-        this.pos.x = this.trap.pos.x - this.offset.x;
-        this.pos.y = this.trap.pos.y - this.offset.y;
+    this.pos.x = this.trap.pos.x - this.offset.x;
+    this.pos.y = this.trap.pos.y - this.offset.y;
+
 		this.currentLookAhead.x = 0;
 		this.currentLookAhead.y = 0;
-    },
+  },
 	
 	
 	follow: function( entity ) {
@@ -48,6 +49,7 @@ ig.Camera = ig.Class.extend({
 	
 	move: function( axis, pos, size ) {
 		var lookAhead = 0;
+
 		if( pos < this.trap.pos[axis] ) {
 			this.trap.pos[axis] = pos;
 			this.currentLookAhead[axis] = this.lookAhead[axis];
@@ -58,10 +60,7 @@ ig.Camera = ig.Class.extend({
 		}
 		
 		return (
-			this.pos[axis] - (
-				this.pos[axis] - this.trap.pos[axis] + this.offset[axis]
-				+ this.currentLookAhead[axis]
-			) * ig.system.tick * this.damping
+			this.pos[axis] - (this.pos[axis] - this.trap.pos[axis] + this.offset[axis] + this.currentLookAhead[axis]) * ig.system.tick * this.damping
 		).limit( 0, this.max[axis] );
 	},
 	
