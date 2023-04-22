@@ -1,8 +1,21 @@
+/**
+ * Classe base per il giocatore (gestito dall'utente)
+ * Ogni giocatore deve estendere questa classe
+ * Ogni giocatore:
+ * * deve muoversi a destra e sinistra e saltare/cadere
+ * ? ogni giocatore, accanto a se deve mostrare un'arma, se presente (l'arma deve essere mostrata davanti a lui, seguendo la sua direzione di movimento)
+ * - ogni giocatore deve poter attaccare
+ * - ogni giocatore deve poter morire
+ * 
+ * L'arma è gestita dall'entità EntityWeapon definita in src\lib\game\entities\weapon.js
+ */
+
 ig.module(
     'game.entities.player'
 )
 .requires(
-    'impact.entity'
+    'impact.entity',
+    'game.entities.weapon'
 )
 .defines(function() {
 
@@ -21,6 +34,10 @@ ig.module(
         friction: { x: 600, y: 0 },
         maxVel: { x: 100, y: 110 }, // TODO: cambiare questi valori affinchè il personaggio vada più veloce e salti più in alto
 
+        hasWeapon: false,
+
+        lives: 50, // lives of the player; when it reaches 0, the player dies
+
         init: function (x, y, settings) {
 
             this.parent(x, y, settings);
@@ -35,6 +52,13 @@ ig.module(
             this.addAnim('hit', 1, [48, 49, 50, 51, 50, 51]);
             this.addAnim('death', 1, [48, 49, 50, 51, 50, 51, 57, 58, 59]);
 
+            this.currentAnim = this.anims.idle;
+            
+            this.hasWeapon = true;
+            if(this.hasWeapon){
+                // far comparire l'arma accanto al giocatore
+                this.weapon = ig.game.spawnEntity(EntityWeapon, this.pos.x - this.size.x, this.pos.y);
+            }
         },
 
         update: function() {
@@ -43,12 +67,13 @@ ig.module(
 
             // associate the keys to the player's movement (left and right)
             if (ig.input.state('left')) {
-                console.log('left');
                 this.accel.x = -acceleration;
                 this.flip = true;
+                // this.weapon.pos.x = this.pos.x - this.size.x;
             } else if (ig.input.state('right')) {
                 this.accel.x = acceleration;
                 this.flip = false;
+                // this.weapon.pos.x = this.pos.x + this.size.x;
             } else {
                 this.accel.x = 0;
             }
@@ -65,6 +90,11 @@ ig.module(
                 this.falling = true;
             }
 
+            // attack logic
+            if(ig.input.state('hit')){
+                this.currentAnim = this.anims.hit;
+            }
+
             // flip the player's sprite when he's moving right
             this.currentAnim.flip.x = this.flip;
 
@@ -75,6 +105,8 @@ ig.module(
             else if(this.vel.y > 0 && !this.standing) this.currentAnim = this.anims.fall;
             else if(this.vel.x != 0) this.currentAnim = this.anims.run;
             else this.currentAnim = this.anims.idle;
+
+            
         }
     });
 });
