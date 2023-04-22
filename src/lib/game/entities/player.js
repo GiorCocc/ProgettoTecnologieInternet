@@ -1,6 +1,5 @@
 /**
  * Classe base per il giocatore (gestito dall'utente)
- * Ogni giocatore deve estendere questa classe
  * Ogni giocatore:
  * * deve muoversi a destra e sinistra e saltare/cadere
  * ? ogni giocatore, accanto a se deve mostrare un'arma, se presente (l'arma deve essere mostrata davanti a lui, seguendo la sua direzione di movimento)
@@ -36,7 +35,7 @@ ig.module(
 
         hasWeapon: false,
 
-        lives: 50, // lives of the player; when it reaches 0, the player dies
+        health: 50, // lives of the player; when it reaches 0, the player dies
 
         init: function (x, y, settings) {
 
@@ -54,11 +53,7 @@ ig.module(
 
             this.currentAnim = this.anims.idle;
             
-            this.hasWeapon = true;
-            if(this.hasWeapon){
-                // far comparire l'arma accanto al giocatore
-                this.weapon = ig.game.spawnEntity(EntityWeapon, this.pos.x - this.size.x, this.pos.y);
-            }
+            this.addWeapon();
         },
 
         update: function() {
@@ -107,6 +102,22 @@ ig.module(
             else this.currentAnim = this.anims.idle;
 
             
-        }
+        },
+
+        // TODO: implementare la funzione receiveDamage
+        receiveDamage: function(amount, from) {},
+
+        // TODO: implementare la funzione collideWith
+        collideWith: function(other, axis) {},
+
+        addWeapon: function() {
+            this.hasWeapon = true;
+            if(this.hasWeapon){
+                // far comparire l'arma accanto al giocatore
+                this.weapon = ig.game.spawnEntity(EntityWeapon, this.pos.x - this.size.x, this.pos.y);
+            }
+        },
+
+
     });
 });
