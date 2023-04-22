@@ -44,6 +44,7 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.D, 'right' );
 
 		ig.input.bind(ig.KEY.C, 'attack');
+	},
 
 	setupCamera: function() {
 		this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
