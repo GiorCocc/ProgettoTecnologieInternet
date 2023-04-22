@@ -1,3 +1,14 @@
+/**
+ * Pagina principale del gioco
+ * --------------------------
+ * - collegarei tasti per il gioco
+ * - caricare la mappa
+ * - caricare il giocatore
+ * - gestire la morte del giocatore
+ * - gestire la comparsa dei giocatori in posizioni casuali (creare un set di posizioni da cui effettuare la scelta)
+ * - gestire la comparsa delle armi
+ */
+
 ig.module( 
 	'game.main' 
 )
@@ -60,9 +71,13 @@ MyGame = ig.Game.extend({
 	update: function() {
 		// Update all entities and backgroundMaps
 		this.parent();
+
+		
 		
 		// Add your own, additional update code here
 		this.camera.follow(this.getEntitiesByType(EntityPlayer)[0]);
+
+		this.playerOutOfBounds();
 	},
 	
 	draw: function() {
@@ -70,12 +85,50 @@ MyGame = ig.Game.extend({
 		this.parent();
 		
 		
-		// Add your own drawing code here
-		var x = ig.system.width/2,
-			y = ig.system.height/2;
 		
-		//this.font.draw( 'Sembra che tutto funzioni!', x, y, ig.Font.ALIGN.CENTER );
+	},
+	
+	// TODO: modificare la funzione mettendo il giocatore in una nuova posizione casuale (scegliere da un set predefinito di posizioni)
+	spawnPlayer: function(){
+		ig.game.spawnEntity(EntityPlayer, 56, 146);
+	},
+
+	// TODO: creare una funzione che permetta di inserire le armi sulla mappa
+	spawnWeapons: function(){},
+
+	removePLayer: function(){
+		var player = this.getEntitiesByType(EntityPlayer)[0];
+		var weapon = this.getEntitiesByType(EntityWeapon)[0] || null;
+		this.removeEntity(player);
+		this.removeEntity(weapon);
+
+		this.spawnPlayer();
+	},
+
+	// TODO: creare una funzione per gestire la morte di un personaggio (da parte di un altro personaggio o da un nemico)
+	playerDied: function(killerID){},
+
+	playerOutOfBounds: function(){
+		var player = this.getEntitiesByType(EntityPlayer)[0];
+
+		log('player pos: ', player.pos.x, player.pos.y);
+		
+		if(	player.pos.x < 0 || 
+				player.pos.x > this.collisionMap.pxWidth || 
+				player.pos.y < 0 || 
+				player.pos.y > this.collisionMap.pxHeight	) {
+					this.removePLayer();
+				}
+	},
+
+	drawTextOnScreen: function(text) {
+		// Add your own drawing code here
+		var x = ig.system.width/2;
+		var y = ig.system.height/2;
+		
+		this.font.draw( text, x, y, ig.Font.ALIGN.CENTER );
 	}
+
 });
 
 
