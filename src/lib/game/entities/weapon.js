@@ -69,8 +69,6 @@ ig.module(
         },
 
         // TODO: rimuovere l'arma quando il giocatore muore o quando usage è uguale a 0
-        remove: function(){
-
-        }
+        remove: function(){},
     });
 });
