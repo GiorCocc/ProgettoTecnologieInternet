@@ -1,9 +1,9 @@
 /**
  * Pagina principale del gioco
  * --------------------------
- * - collegarei tasti per il gioco
- * - caricare la mappa
- * - caricare il giocatore
+ * * collegarei tasti per il gioco
+ * * caricare la mappa
+ * * caricare il giocatore con la sua arca predefinita
  * - gestire la morte del giocatore
  * - gestire la comparsa dei giocatori in posizioni casuali (creare un set di posizioni da cui effettuare la scelta)
  * - gestire la comparsa delle armi
@@ -41,6 +41,9 @@ MyGame = ig.Game.extend({
 
 		// camera
 		this.setupCamera();
+
+		// spawn player
+		// this.spawnPlayer();
 	},
 
 	bindKeys: function() {
@@ -59,10 +62,10 @@ MyGame = ig.Game.extend({
 
 	setupCamera: function() {
 		this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
-		this.camera.trap.size.x = ig.system.width/2;
-		this.camera.trap.size.y = ig.system.height/2;
-		this.camera.lookAhead.x = ig.system.width/3;
-		this.camera.lookAhead.y = ig.system.height/3;
+		// this.camera.trap.size.x = ig.system.width/2;
+		// this.camera.trap.size.y = ig.system.height/2;
+		// this.camera.lookAhead.x = ig.system.width/3;
+		// this.camera.lookAhead.y = ig.system.height/3;
 		this.camera.max.x = this.collisionMap.pxWidth - ig.system.width;
     this.camera.max.y = this.collisionMap.pxHeight - ig.system.height;
     this.camera.set( this.getEntitiesByType(EntityPlayer)[0]);
@@ -72,8 +75,6 @@ MyGame = ig.Game.extend({
 		// Update all entities and backgroundMaps
 		this.parent();
 
-		
-		
 		// Add your own, additional update code here
 		this.camera.follow(this.getEntitiesByType(EntityPlayer)[0]);
 
@@ -83,14 +84,14 @@ MyGame = ig.Game.extend({
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
-		
-		
-		
 	},
 	
 	// TODO: modificare la funzione mettendo il giocatore in una nuova posizione casuale (scegliere da un set predefinito di posizioni)
 	spawnPlayer: function(){
+		ig.game.spawnEntity(EntityWeapon, 56 - 10, 146);
+		log("Player spawned");
 		ig.game.spawnEntity(EntityPlayer, 56, 146);
+		log("Weapon spawned");
 	},
 
 	// TODO: creare una funzione che permetta di inserire le armi sulla mappa
@@ -111,14 +112,15 @@ MyGame = ig.Game.extend({
 	playerOutOfBounds: function(){
 		var player = this.getEntitiesByType(EntityPlayer)[0];
 
-		log('player pos: ', player.pos.x, player.pos.y);
-		
 		if(	player.pos.x < 0 || 
 				player.pos.x > this.collisionMap.pxWidth || 
 				player.pos.y < 0 || 
 				player.pos.y > this.collisionMap.pxHeight	) {
 					this.removePLayer();
+					log("Player fall out of the map");
 				}
+
+		
 	},
 
 	drawTextOnScreen: function(text) {
