@@ -53,7 +53,7 @@ ig.module(
 
             this.currentAnim = this.anims.idle;
             
-            this.addWeapon();
+            // this.addWeapon();
         },
 
         update: function() {
@@ -110,13 +110,13 @@ ig.module(
         // TODO: implementare la funzione collideWith
         collideWith: function(other, axis) {},
 
-        addWeapon: function() {
-            this.hasWeapon = true;
-            if(this.hasWeapon){
-                // far comparire l'arma accanto al giocatore
-                this.weapon = ig.game.spawnEntity(EntityWeapon, this.pos.x - this.size.x, this.pos.y);
-            }
-        },
+        // addWeapon: function() {
+        //     this.hasWeapon = true;
+        //     if(this.hasWeapon){
+        //         // far comparire l'arma accanto al giocatore
+        //         this.weapon = ig.game.spawnEntity(EntityWeapon, this.pos.x - this.size.x, this.pos.y);
+        //     }
+        // },
 
 
     });
