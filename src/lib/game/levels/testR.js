@@ -34,6 +34,11 @@ LevelTestR=/*JSON[*/{
 			"type": "EntityWeapon",
 			"x": 54,
 			"y": 160
+		},
+		{
+			"type": "EntityKill",
+			"x": 40,
+			"y": 260
 		}
 	],
 	"layer": [
