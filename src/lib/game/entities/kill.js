@@ -14,15 +14,16 @@ EntityKill = ig.Entity.extend({
     message : 'You died!',
     killTimer: null,
     font:  new ig.Font( 'media/04b03.font.png' ),
-    type: ig.Entity.TYPE.NONE,
+    type: ig.Entity.TYPE.B,
     checkAgainst: ig.Entity.TYPE.BOTH,
     
     check: function( other ) {
-        other.kill();
         this.killTimer = new ig.Timer( 2 );
         
     },
+
     update: function() {},
+    
     draw: function() {
         
         if( this.killTimer && this.killTimer.delta()<  0 ) { // if the timer is set and has not expired, delta significa che è passato un secondo
