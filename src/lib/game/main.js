@@ -80,6 +80,19 @@ MyGame = ig.Game.extend({
 
 		this.playerOutOfBounds();
 	},
+
+	collideWith: function(entities, player) {
+		for (var i = 0; i < entities.length; i++) {
+			if (entities[i].type == ig.Entity.TYPE.KILL) {
+				if (player.touches(entities[i]) && player.killed === false) {
+					// log("Player touched a kill entity");
+					player.kill();
+					this.removePlayer();
+				}
+			}
+		}
+		
+	},
 	
 	draw: function() {
 		// Draw all entities and backgroundMaps
@@ -97,13 +110,16 @@ MyGame = ig.Game.extend({
 	// TODO: creare una funzione che permetta di inserire le armi sulla mappa
 	spawnWeapons: function(){},
 
-	removePLayer: function(){
+	removePlayer: function(){
 		var player = this.getEntitiesByType(EntityPlayer)[0];
 		var weapon = this.getEntitiesByType(EntityWeapon)[0] || null;
-		this.removeEntity(player);
-		this.removeEntity(weapon);
 
-		this.spawnPlayer();
+		if(player.killed){
+			this.removeEntity(player);
+			this.removeEntity(weapon);
+
+			this.spawnPlayer();
+		}
 	},
 
 	// TODO: creare una funzione per gestire la morte di un personaggio (da parte di un altro personaggio o da un nemico)
@@ -119,8 +135,6 @@ MyGame = ig.Game.extend({
 					this.removePLayer();
 					log("Player fall out of the map");
 				}
-
-		
 	},
 
 	drawTextOnScreen: function(text) {
@@ -130,7 +144,6 @@ MyGame = ig.Game.extend({
 		
 		this.font.draw( text, x, y, ig.Font.ALIGN.CENTER );
 	}
-
 });
 
 
