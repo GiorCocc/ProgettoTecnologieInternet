@@ -27,7 +27,6 @@ ig.module(
         usage: 3,
 
         init: function (x, y, settings) {
-
             // the weapon is placed on the left side of the player by the SpawnEntity function
             this.parent(x, y, settings);
 
@@ -56,10 +55,11 @@ ig.module(
             // TODO: ruotare l'arma in senso circolare, di 45 gradi ogni volta che il giocatore preme il tasto per attaccare
             if (ig.input.pressed('attack')) {
                 if(this.pos.x < player.pos.x){
-                    this.currentAnim = new ig.Animation(this.animSheet, 0.1, [7,6,5,4, 5,6, 0], true);
+                    this.currentAnim = new ig.Animation(this.animSheet, 0.1, [11,10,9,8, 9,10, 0], true);
+                    
                 }  
                 else{
-                    this.currentAnim = new ig.Animation(this.animSheet, 0.1, [11,10,9,8, 9,10, 0], true);
+                    this.currentAnim = new ig.Animation(this.animSheet, 0.1, [7,6,5,4, 5,6, 0], true);
                 }
                     
             }
