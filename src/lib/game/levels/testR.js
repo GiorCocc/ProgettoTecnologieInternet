@@ -1,5 +1,5 @@
 ig.module( 'game.levels.testR' )
-.requires( 'impact.image','game.entities.player','game.entities.kill' )
+.requires( 'impact.image','game.entities.player','game.entities.kill','game.entities.weapon' )
 .defines(function(){
 LevelTestR=/*JSON[*/{
 	"entities": [
@@ -31,8 +31,8 @@ LevelTestR=/*JSON[*/{
 			}
 		},
 		{
-			"type": "EntityKill",
-			"x": 96,
+			"type": "EntityWeapon",
+			"x": 54,
 			"y": 160
 		}
 	],
