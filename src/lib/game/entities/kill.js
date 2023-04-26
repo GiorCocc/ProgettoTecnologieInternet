@@ -19,6 +19,8 @@ EntityKill = ig.Entity.extend({
     
     check: function( other ) {
         other.kill();
+        
+
         this.killTimer = new ig.Timer( 2 );
         
     },
