@@ -19,8 +19,6 @@ EntityKill = ig.Entity.extend({
     
     check: function( other ) {
         other.kill();
-        
-
         this.killTimer = new ig.Timer( 2 );
         
     },
@@ -33,7 +31,6 @@ EntityKill = ig.Entity.extend({
         else{
             this.font.draw( "", ig.system.width/2, ig.system.height/2 );
         };
-
     }
 });
 });
