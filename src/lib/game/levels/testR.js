@@ -10,35 +10,13 @@ LevelTestR=/*JSON[*/{
 		},
 		{
 			"type": "EntityKill",
-			"x": 160,
-			"y": 312,
-			"settings": {
-				"size": {
-					"x": 32,
-					"y": 16
-				}
-			}
-		},
-		{
-			"type": "EntityKill",
-			"x": 512,
-			"y": 312,
-			"settings": {
-				"size": {
-					"x": 64,
-					"y": 16
-				}
-			}
+			"x": 96,
+			"y": 160
 		},
 		{
 			"type": "EntityWeapon",
 			"x": 54,
 			"y": 160
-		},
-		{
-			"type": "EntityKill",
-			"x": 40,
-			"y": 260
 		}
 	],
 	"layer": [
