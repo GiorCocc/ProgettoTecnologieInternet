@@ -5,6 +5,8 @@
  * * ogni arma deve sparire quando il giocatore muore e quando finisce i suoi colpi
  */
 
+// TODO: provare a implementarla con Impact++
+
 ig.module(
     'game.entities.weapon'
 )
@@ -15,6 +17,8 @@ ig.module(
 
     EntityWeapon = ig.Entity.extend({
 
+        name: 'weapon',
+        class: 'EntityWeapon',
         size: { x: 11, y: 16 },
         offset: { x: 10, y: 12 },
         collides: ig.Entity.COLLIDES.NEVER,
@@ -28,7 +32,7 @@ ig.module(
 
         init: function (x, y, settings) {
             // the weapon is placed on the left side of the player by the SpawnEntity function
-            this.parent(x, y, settings);
+            // this.parent(x, y, settings);
 
             this.addAnim('init', 1, [0]);
         },
@@ -49,7 +53,7 @@ ig.module(
 
         update: function() {
             // update the weapon position according to the player position
-            var player = ig.game.getEntitiesByType(EntityPlayer)[0];
+            var player = ig.game.getEntityByName('player');
 
             // move the weapon with the player
             if (this.hasPlayerAWapon) {
@@ -63,7 +67,7 @@ ig.module(
                 }
             }
 
-            this.parent();
+            // this.parent();
 
             // if the player presses the attack button, the weapon attacks
             if (ig.input.pressed('attack')) {
