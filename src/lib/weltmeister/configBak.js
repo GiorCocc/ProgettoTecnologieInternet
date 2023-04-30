@@ -14,10 +14,7 @@ wm.config = {
 		// from. If you want to load entities from several directories,
 		// you can specify an array here. E.g.:
 		// 'entityFiles': ['lib/game/powerups/*.js', 'lib/game/entities/*.js']
-		'entityFiles': [ 
-			'lib/game/entities/*.js', 
-			'lib/plusplus/entities/*.js' 
-		],
+		'entityFiles': 'lib/game/entities/*.js',
 		
 		// The default path for the level file selection box
 		'levelPath': 'lib/game/levels/',
@@ -82,7 +79,7 @@ wm.config = {
 
 	// Whether to enable unidirectional scrolling for touchpads; this
 	// automatically unbinds the MWHEEL_UP and MWHEEL_DOWN actions.
-	// 'touchScroll': false,
+	'touchScroll': false,
 	
 	// View settings. You can change the default Zoom level and whether
 	// to show the grid on startup here.
@@ -113,7 +110,7 @@ wm.config = {
 	// The tilesize only specifies the size in the image - resizing to final
 	// size for each layer happens in Weltmeister.
 	'collisionTiles': {
-		'path': 'lib/weltmeister/collisiontiles_plusplus_64.png',
+		'path': 'lib/weltmeister/collisiontiles-64.png',
 		'tilesize': 64
 	},
 	
