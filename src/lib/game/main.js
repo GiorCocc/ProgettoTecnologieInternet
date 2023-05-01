@@ -173,8 +173,8 @@ ig.module(
 			},
 
 			spawnWeapon: function () {
-				ig.game.spawnEntity(EntityWeapon, 56 - 10, 146);
-				// log("Weapon spawned");
+				ig.game.spawnEntity(EntitySword, 56 - 10, 146);
+				log("Weapon spawned");
 			},
 
 			// TODO: creare una funzione che permetta di inserire le armi sulla mappa
@@ -191,10 +191,11 @@ ig.module(
 			},
 
 			removeWeapon: function () {
-				var weapon = this.getEntitiesByClass(EntityWeapon)[0];
+				var weapon = this.getEntitiesByClass(EntitySword)[0];
+
+				if(!weapon) return;
 
 				this.removeEntity(weapon);
-
 				this.spawnWeapon();
 			},
 
@@ -209,7 +210,7 @@ ig.module(
 					this.removePlayer();
 					this.removeWeapon();
 
-					log("Player fall out of the map");
+					// log("Player fall out of the map");
 				}
 			},
 		});
