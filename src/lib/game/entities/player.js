@@ -39,7 +39,7 @@ ig.module(
             // light
             glowSettings: {
                 light: {
-                    performance: ig.EntityExtended.PERFORMANCE.MOVABLE,
+                    performance: ig.EntityExtended.PERFORMANCE.DYNAMIC,
                     castsShadows: true,
                 }
             },
