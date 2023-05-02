@@ -56,10 +56,10 @@ ig.module(
 				// camera
 				// ig.game.camera.follow(ig.game.player, false, false);
 				ig.game.camera.addAtmosphere(0,{
-					r: 0.1,
-					g: 0.1,
-					b: 0.1,
-					alpha: 0.7,
+					// r: 0.1,
+					// g: 0.1,
+					// b: 0.1,
+					alpha: 1,
 			});
 			},
 
