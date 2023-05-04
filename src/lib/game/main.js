@@ -14,15 +14,17 @@ ig.module(
 )
 	.requires(
 		'plusplus.core.plusplus',
+
 		'game.levels.testR',
+
 		'game.entities.player',
 		'game.entities.pain',
 		'game.entities.kill',
 		'game.entities.weapon',
-		'game.ui.healthBar',
-
-
+		'game.entities.remote-player',
 		'plusplus.entities.pain',
+
+		'game.ui.healthBar',
 		'plusplus.ui.ui-toggle-pause',
 		'plusplus.ui.ui-meter',
 		'plusplus.ui.ui-text',
@@ -102,8 +104,6 @@ ig.module(
 				// share button
 			},
 
-			
-
 			inputStart: function () {
 				this.parent();
 
@@ -146,8 +146,6 @@ ig.module(
 
 			// Method to check if the player is colliding with a kill entity
 			collideWith: function () {
-				
-				
 			},
 
 			// Method to check if the player is dead (health <= 0)
