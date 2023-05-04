@@ -8,14 +8,15 @@ ig.module(
   .defines(function () {
     "use strict";
 
+    // TODO: da testarne il funzionamento
     ig.AbilityWeaponDamage = ig.AbilityDamage.extend({
 
       damage: 1,
 
       init: function (entity, settings) {
-          this.parent(entity, settings);
-  
-          this.damage = settings.damage || this.damage;
+        this.parent(entity, settings);
+
+        this.damage = settings.damage || this.damage;
       },
 
       initTypes: function () {
