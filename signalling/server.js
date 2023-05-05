@@ -1,5 +1,5 @@
-var PORT = 6666;
-var MAX_NUMBER_OF_USERS_PER_ROOM = 10;
+var PORT = 8034;
+var MAX_ROOM_USERS = 5;
 
 var fs = require('fs');
 var log = console.log.bind(console);
@@ -10,22 +10,35 @@ var lastUserId = 0;
 var lastRoomId = 0;
 
 var MessageType = {
+  // A messages you send to server, when want to join or leave etc.
   JOIN: 'join',
   DISCONNECT: 'disconnect',
+
+  // You receive room info as a response for join command. It contains information about
+  // the room you joined, and it's users
   ROOM: 'room',
+
+  // A messages you receive from server when another user want to join or leave etc.
   USER_JOIN: 'user_join',
   USER_READY: 'user_ready',
   USER_LEAVE: 'user_leave',
+
+  // WebRtc signalling info, session and ice-framework related
   SDP: 'sdp',
   ICE_CANDIDATE: 'ice_candidate',
-  ERROR_ROOM_FULL: 'error_room_full',
-  ERROR_USER_INIT: 'error_user_init',
+
+  // Errors... shit happens
+  ERROR_ROOM_IS_FULL: 'error_room_is_full',
+  ERROR_USER_INITIALIZED: 'error_user_initialized'
 };
 
-function User() { this.userId = ++lastUserId; }
-
+function User() {
+  this.userId = ++lastUserId;
+}
 User.prototype = {
-  getId: function() { return this.userId; },
+  getId: function() {
+    return this.userId;
+  }
 };
 
 function Room(name) {
@@ -33,41 +46,51 @@ function Room(name) {
   this.users = [];
   this.sockets = {};
 }
-
 Room.prototype = {
-  getName: function() { return this.roomName; },
-  getUsers: function() { return this.users; },
-  getUserById: function(userId) {
-    return this.users.find(function(user) { return user.getId() === userId; }); 
+  getName: function() {
+    return this.roomName;
   },
-  numberOfUsers: function() { return this.users.length; },
-  isEmpty: function() { return this.numberOfUsers() === 0; },
+  getUsers: function() {
+    return this.users;
+  },
+  getUserById: function(id) {
+    return this.users.find(function(user) {
+      return user.getId() === id;
+    });
+  },
+  numUsers: function() {
+    return this.users.length;
+  },
+  isEmpty: function() {
+    return this.users.length === 0;
+  },
   addUser: function(user, socket) {
     this.users.push(user);
-    this.sockets[this.users.getId()] = socket;
+    this.sockets[user.getId()] = socket;
   },
-  removeUser: function(userId) {
+  removeUser: function(id) {
     this.users = this.users.filter(function(user) {
-      return user.getId() !== userId;
+      return user.getId() !== id;
     });
-    delete this.sockets[userId];
+    delete this.sockets[id];
   },
-  sendTo: function(users, message, data) {
-    var socket = this.sockets[users.getId()];
-    if (socket) {
-      socket.emit(message, data);
-    }
+  sendTo: function(user, message, data) {
+    var socket = this.sockets[user.getId()];
+    socket.emit(message, data);
   },
-  sendToId: function(userId, message, data) { return this.sendTo(this.getUserById(userId), message, data); },
-  broadcast: function(fromUser, message, data) {
+  sendToId: function(userId, message, data) {
+    return this.sendTo(this.getUserById(userId), message, data);
+  },
+  broadcastFrom: function(fromUser, message, data) {
     this.users.forEach(function(user) {
       if (user.getId() !== fromUser.getId()) {
         this.sendTo(user, message, data);
       }
     }, this);
-  },
+  }
 };
 
+// socket
 function handleSocket(socket) {
 
   var user = null;
