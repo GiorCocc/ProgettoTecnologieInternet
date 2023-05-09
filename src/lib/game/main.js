@@ -9,146 +9,213 @@
  * - gestire la comparsa delle armi
  */
 
-ig.module( 
-	'game.main' 
+ig.module(
+	'game.main'
 )
-.requires(
-	'impact.game',
-	'impact.font',
-	'impact.debug.debug',
+	.requires(
+		'plusplus.core.plusplus',
 
-	'game.levels.testR', 
+		'game.levels.testR',
 
-	'plugins.camera'
-)
-.defines(function(){
+		'game.entities.player',
+		'game.entities.pain',
+		'game.entities.kill',
+		'game.entities.weapon',
+		'game.entities.remote-player',
+		'plusplus.entities.pain',
 
-	var log = console.log.bind(console);
+		'game.ui.healthBar',
+		'plusplus.ui.ui-toggle-pause',
+		'plusplus.ui.ui-meter',
+		'plusplus.ui.ui-text',
 
-MyGame = ig.Game.extend({
-	
-	// Load a font
-	font: new ig.Font( 'media/04b03.font.png' ),
+		'plusplus.debug.debug'
+	)
+	.defines(function () {
 
-	gravity: 300,
-	
-	
-	init: function() {
-		// Initialize main level
-		this.loadLevel(LevelTestR);
-		// Initialize your game here; bind keys etc.
-		this.bindKeys();
+		var log = console.log.bind(console);
 
-		// camera
-		this.setupCamera();
+		var MyGame = ig.GameExtended.extend({
 
-		// spawn player
-		// this.spawnPlayer();
-	},
+			// Load a font
+			font: new ig.Font('media/04b03.font.png'),
 
-	bindKeys: function() {
-		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
-		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
-		ig.input.bind( ig.KEY.UP_ARROW, 'up' );
-		ig.input.bind( ig.KEY.DOWN_ARROW, 'down' );
+			gravity: 300,
 
-		ig.input.bind( ig.KEY.W, 'up' );
-		ig.input.bind( ig.KEY.S, 'down' );
-		ig.input.bind( ig.KEY.A, 'left' );
-		ig.input.bind( ig.KEY.D, 'right' );
+			shapesPasses: {
+				lighting: {
+					ignoreClimbable: true,
+					discardBoundaryInner: true
+				}
+			},
 
-		ig.input.bind(ig.KEY.C, 'attack');
-	},
+			init: function () {
+				this.parent();
+				// Initialize main level
+				this.loadLevel(ig.global.LevelTestR);
+				// Load UI
+				this.initUI();
+				// camera
+				// ig.game.camera.follow(ig.game.player, false, false);
+				ig.game.camera.addAtmosphere(0,{
+					// r: 0.1,
+					// g: 0.1,
+					// b: 0.1,
+					alpha: 1,
+			});
+			},
 
-	setupCamera: function() {
-		this.camera = new ig.Camera(ig.system.width/2, ig.system.height/2, 5);
-		// this.camera.trap.size.x = ig.system.width/2;
-		// this.camera.trap.size.y = ig.system.height/2;
-		// this.camera.lookAhead.x = ig.system.width/3;
-		// this.camera.lookAhead.y = ig.system.height/3;
-		this.camera.max.x = this.collisionMap.pxWidth - ig.system.width;
-    this.camera.max.y = this.collisionMap.pxHeight - ig.system.height;
-    this.camera.set( this.getEntitiesByType(EntityPlayer)[0]);
-	},
-	
-	update: function() {
-		// Update all entities and backgroundMaps
-		this.parent();
+			// TODO: da implementare la barra della vita del giocatore e un pulsante per la condivisione della stanza di gioco
+			initUI: function () {
+				// health text label
+				var healthLabel = this.spawnEntity(ig.UIText, 0, 0, {
+					// position to top left
+					posPct: {
+						x: 0,
+						y: 0
+					},
+					// set the margin
+					marginAsPct: false,
+					margin: {
+						x: 20,
+						y: 20
+					},
+					// text settings
+					text: 'Health',
+					font: new ig.Font('media/04b03.font.png'),
+					textAlign: 'left',
+					textBaseline: 'top',
+					// size of text
+					size: {
+						x: 64,
+						y: 8
+					},
+					// the color of the text set to white
+					fillStyle: 'rgb(255,255,255)',
+					
+					
+				});
+				// player health
+				// TODO: implementare il riempimento della barra in base alla vita del giocatore
 
-		// Add your own, additional update code here
-		this.camera.follow(this.getEntitiesByType(EntityPlayer)[0]);
+				var healthBar = this.spawnEntity(ig.UIHealthBar, 0, 0, {});
+				
 
-		this.playerOutOfBounds();
-	},
+				// share button
+			},
 
-	collideWith: function(entities, player) {
-		for (var i = 0; i < entities.length; i++) {
-			if (entities[i].type == ig.Entity.TYPE.KILL) {
-				if (player.touches(entities[i]) && player.killed === false) {
-					// log("Player touched a kill entity");
-					player.kill();
+			inputStart: function () {
+				this.parent();
+
+				// arrow keys (other keys are binded by default)
+				ig.input.bind(ig.KEY.UP_ARROW, 'jump');
+
+				// WASD (other keys are binded by default)
+				ig.input.bind(ig.KEY.W, 'jump');
+
+				// ability keys
+				ig.input.bind(ig.KEY.C, 'attack');
+			},
+
+			inputEnd: function () {
+				this.parent();
+
+				// arrow keys (other keys are unbinded by default)
+				ig.input.unbind(ig.KEY.UP_ARROW, 'jump');
+				// ig.input.unbind(ig.KEY.DOWN_ARROW, 'down');
+
+				// WASD (other keys are unbinded by default)
+				ig.input.unbind(ig.KEY.W, 'jump');
+
+				// ability keys
+				ig.input.unbind(ig.KEY.C, 'attack');
+			},
+
+			update: function () {
+				// Update all entities and backgroundMaps
+				this.parent();
+
+				this.camera.follow(this.getPlayer());
+
+				this.playerOutOfBounds();
+
+				this.checkPlayerDeath();
+
+				this.collideWith();
+			},
+
+			// Method to check if the player is colliding with a kill entity
+			collideWith: function () {
+			},
+
+			// Method to check if the player is dead (health <= 0)
+			checkPlayerDeath: function () {
+				var player = this.getPlayer();
+
+				if (player.health <= 0) {
 					this.removePlayer();
+					this.removeWeapon();
 				}
-			}
-		}
-		
-	},
-	
-	draw: function() {
-		// Draw all entities and backgroundMaps
-		this.parent();
-	},
-	
-	// TODO: modificare la funzione mettendo il giocatore in una nuova posizione casuale (scegliere da un set predefinito di posizioni)
-	spawnPlayer: function(){
-		ig.game.spawnEntity(EntityWeapon, 56 - 10, 146);
-		log("Player spawned");
-		ig.game.spawnEntity(EntityPlayer, 56, 146);
-		log("Weapon spawned");
-	},
+			},
 
-	// TODO: creare una funzione che permetta di inserire le armi sulla mappa
-	spawnWeapons: function(){},
+			draw: function () {
+				// Draw all entities and backgroundMaps
+				this.parent();
+			},
 
-	removePlayer: function(){
-		var player = this.getEntitiesByType(EntityPlayer)[0];
-		var weapon = this.getEntitiesByType(EntityWeapon)[0] || null;
+			// TODO: modificare la funzione mettendo il giocatore in una nuova posizione casuale (scegliere da un set predefinito di posizioni)
+			spawnPlayer: function () {
+				ig.game.spawnEntity(EntityPlayer, 56, 146);
+				ig.game.spawnEntity(UIHealthBar, 0, 0);
+				// log("Player spawned");
+			},
 
-		if(player.killed){
-			this.removeEntity(player);
-			this.removeEntity(weapon);
+			spawnWeapon: function () {
+				ig.game.spawnEntity(EntitySword, 56 - 10, 146);
+				log("Weapon spawned");
+			},
 
-			this.spawnPlayer();
-		}
-	},
+			// TODO: creare una funzione che permetta di inserire le armi sulla mappa
+			spawnWeapons: function () { },
 
-	// TODO: creare una funzione per gestire la morte di un personaggio (da parte di un altro personaggio o da un nemico)
-	playerDied: function(killerID){},
+			removePlayer: function () {
+				var player = this.getPlayer();
+				var playerhealthMeter = this.getEntitiesByClass(UIHealthBar)[0];
 
-	playerOutOfBounds: function(){
-		var player = this.getEntitiesByType(EntityPlayer)[0];
+				this.removeEntity(player);
+				this.removeEntity(playerhealthMeter);
 
-		if(	player.pos.x < 0 || 
-				player.pos.x > this.collisionMap.pxWidth || 
-				player.pos.y < 0 || 
-				player.pos.y > this.collisionMap.pxHeight	) {
-					this.removePLayer();
-					log("Player fall out of the map");
+				this.spawnPlayer();
+			},
+
+			removeWeapon: function () {
+				var weapon = this.getEntitiesByClass(EntitySword)[0];
+
+				if(!weapon) return;
+
+				this.removeEntity(weapon);
+				this.spawnWeapon();
+			},
+
+			// Method to check if the player is out of the map
+			playerOutOfBounds: function () {
+				var player = this.getPlayer();
+
+				if (player.pos.x < 0 ||
+					player.pos.x > this.collisionMap.pxWidth ||
+					player.pos.y < 0 ||
+					player.pos.y > this.collisionMap.pxHeight) {
+					this.removePlayer();
+					this.removeWeapon();
+
+					// log("Player fall out of the map");
 				}
-	},
-
-	drawTextOnScreen: function(text) {
-		// Add your own drawing code here
-		var x = ig.system.width/2;
-		var y = ig.system.height/2;
-		
-		this.font.draw( text, x, y, ig.Font.ALIGN.CENTER );
-	}
-});
+			},
+		});
 
 
-// Start the Game with 60fps, a resolution of 320x240, scaled
-// up by a factor of 2
-ig.main( '#canvas', MyGame, 60, 320, 240, 2 );
+		// Start the Game with 60fps, a resolution of 320x240, scaled
+		// up by a factor of 2
+		ig.main('#canvas', MyGame, 60, 320, 240, 4, ig.LoaderExtended);
 
-});
+	});
