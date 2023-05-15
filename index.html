@@ -1,46 +1,200 @@
+
 <!DOCTYPE html>
 <html>
-
-<head>
-	<title>Impact Game</title>
-	<style type="text/css">
-		html,
+	<style>
 		body {
-			background-color: #333;
-			color: #fff;
-			font-family: helvetica, arial, sans-serif;
+			width: 100%;
+			height: 100%;
 			margin: 0;
 			padding: 0;
-			font-size: 12pt;
+		}	
+		button {
+			border: none;
+			background-color: darkred; /* Colore di sfondo */
+			color: white;
+			padding: 10px 24px; /* Spazio interno */
+			text-align: center; /* Allinea il testo al centro */
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 10px; /* Arrotonda gli angoli */
+			box-shadow: 0 9px #999; /* Ombra inferiore */
+			}
+
+		button:hover {
+			 /* Colore di sfondo scuro quando passi il mouse sopra */
+			box-shadow: 0 6px #666; /* Ombra inferiore più scura */
+			transform: translateY(3px); /* Trasla verso il basso per creare l'effetto 3D */
+			background-color: #4CAF50;
+			box-shadow: 0 9px #999,; /* Adding a white box-shadow when hovering*/
 		}
-		#canvas {
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			margin: auto;
+
+		#myBtn:focus {
+		outline: none;
 		}
+
+		#myBtn.clicked {
+			animation: pulse 0.5s;
+		}
+
+		@keyframes pulse {
+			0% {
+				transform: scale(1);
+			}
+			50% {
+				transform: scale(1.2);
+			}
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		#container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		}
+		
+      	@font-face {
+        	font-family: 'Minecraft';
+        	src: url('/img/minecraft.ttf');
+      	}
+      	h1 {
+        	font-family: 'Minecraft', sans-serif;
+			text-align: center;
+			top: 25px;
+			font-size: 400%;
+      	}
+    	body {
+			background-image: url('/img/castle.png');
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+		}
+		
+
+		img {
+
+			width: 150px;
+			height: 150px;
+		}
+		#arrow:hover {
+			opacity: 0.9;
+			filter: brightness(90%);
+		}
+		table{
+			position: relative; /* posizione relativa per spostare la tabella */
+			
+			align-items:center ;
+		}
+		
+		#immagine {
+		width: 350px;
+		height: 250px;
+		}
+		#arrow {
+			width: 150px;
+			height: 150px;
+		}
+		img:hover {
+			background-color: 0082cf;
+		}
+		input[type=text] {
+			/* spostare input al centro */
+
+			padding: 10px;
+			border: solid #ccc;
+			text-align: center;
+			font-size: 20px;
+			font-family: Minecraft, sans-serif;
+			color: #555;
+			width: 300px;
+			
+		}
+		
 	</style>
-
-	<script type="text/javascript">
-		if(!window.location.search){
-			var roomName = prompt("Inserisci il nome della stanza o lascia bianco affinchè lo generi casualmente: ");
-			window.location.search = roomName || Math.random().toString(36).substr(2, 5);
-		}
-
-		var roomName = window.location.search;
+<head>
+	
+  <script>
+     // posizione iniziale dell'immagine
+	 var immagini = ["FisherKing.gif", "Guineyvere.gif", "LadyLake.gif", "Lancelot.gif", "Merlin.gif", "Pendragon.gif"];
+	 var posizione = 0;	
+    function avanti() { // funzione per andare avanti
+      posizione++;
+      if (posizione >= immagini.length) {
+        posizione = 0;
+      }
+      document.getElementById("immagine").src = "img/" + immagini[posizione];
+    }
+    function indietro() { // funzione per andare indietro
+      posizione--;
+      if (posizione < 0) {
+        posizione = immagini.length - 1;
+      }
+      document.getElementById("immagine").src = "img/" + immagini[posizione];
+    }
+	
+  </script>
+  
+  	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function() {
+        var campoTesto = document.getElementById("campo_texto");
+        var pulsanteSubmit = document.getElementById("myBtn");
+        pulsanteSubmit.addEventListener("click", function() {
+            var urlDestinazione = 'indexOriginal.html?'+campoTesto.value;
+            window.location.href = urlDestinazione;
+        });
+    });
+		function clickTest(){
+			
+			// Crea l'URL di destinazione con il parametro della query string
+			var urlDestinazione = 'indexOriginal.html?'+campoTesto.value;
+			
+			// Reindirizza l'utente alla pagina di destinazione
+			window.location.href = urlDestinazione;
+		}		
+		
 	</script>
-
-	<script type="text/javascript" src="lib/impact/impact.js"></script>
-	<script type="text/javascript" src="lib/network/socket.io.js"></script>	<!-- Socket.io implementata ultima versione (versione originale socket.io.bak)-->
-	<script type="text/javascript" src="lib/messages.js"></script>
-	<script type="text/javascript" src="lib/game/main.js"></script>
+			
 </head>
-
 <body>
-	<!-- <a href="/editor" target="blank_" class="btn">Editor</a> -->
-	<canvas id="canvas"></canvas>
-</body>
+	
+		<h1>Dungeons Castle</h1>
+		<table style="margin: 0 auto;">
+	
+		<tr>
+			<td colspan="2">
+			<img id="immagine" src="img/FisherKing.gif">
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: left;">
+			<a href="#"  onclick="indietro()"><img id="arrow" src="/img/ArrowSX.png"></a> <!-- pulsante per andare indietro -->
+			</td>
+			<td style="text-align: right;">
+			<a href="#" onclick="avanti()"><img id="arrow" src="/img/ArrowDX.png"></a> <!-- pulsante per andare indietro -->
+			</td>
+		</tr>
+	</table>
+	<table style="margin: 0 auto;">
+		<tr>
+			<td  style="text-align: center;">	
+				
+					<input type="text" value="" id="campo_texto"  placeholder="Insert the Room..."><br><br>
+					<button  id="myBtn"  style="font-family: Minecraft, sans-serif; ">Enter</button>
+				
+			</td>
+		</tr>
+	</table>		
 
+  
+  
+
+</body>
 </html>
+  
+
+					
