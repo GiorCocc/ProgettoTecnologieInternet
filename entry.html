@@ -25,9 +25,12 @@
 	</style>
 
 <script type="text/javascript">
-	if(!window.location.search || window.location.search == "?room="){
+	var room0 = ""+window.location.search.split("/")[0];
+	var room1 = ""+window.location.search.split("/")[1];
+	
+	if(!window.location.search || room0 == "?"){
 		
-		window.location.search =Math.random().toString(36).substr(2, 5); // location search è la query string dell'url (es: ?roomName)
+		window.location.search =Math.random().toString(36).substr(2, 5)+"/"+room1; // location search è la query string dell'url (es: ?roomName)
 		var roomName =window.location.search; 
 	}
 	else{

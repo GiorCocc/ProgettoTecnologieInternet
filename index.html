@@ -120,21 +120,21 @@
 	
   <script>
      // posizione iniziale dell'immagine
-	 var immagini = ["FisherKing.gif", "Guineyvere.gif", "LadyLake.gif", "Lancelot.gif", "Merlin.gif", "Pendragon.gif"];
+	 var immagini = ["fisherKing", "guineyvere", "ladyOfTheLake", "lancelot", "merlin", "arthurPendragon"];
 	 var posizione = 0;	
     function avanti() { // funzione per andare avanti
       posizione++;
       if (posizione >= immagini.length) {
         posizione = 0;
       }
-      document.getElementById("immagine").src = "img/" + immagini[posizione];
+      document.getElementById("immagine").src = "img/" + immagini[posizione]+".gif";
     }
     function indietro() { // funzione per andare indietro
       posizione--;
       if (posizione < 0) {
         posizione = immagini.length - 1;
       }
-      document.getElementById("immagine").src = "img/" + immagini[posizione];
+      document.getElementById("immagine").src = "img/" + immagini[posizione]+".gif";
     }
 	
   </script>
@@ -144,7 +144,8 @@
         var campoTesto = document.getElementById("campo_texto");
         var pulsanteSubmit = document.getElementById("myBtn");
         pulsanteSubmit.addEventListener("click", function() {
-            var urlDestinazione = 'indexOriginal.html?'+campoTesto.value;
+            var urlDestinazione = 'entry.html?'+campoTesto.value+"/"+immagini[posizione];
+			
             window.location.href = urlDestinazione;
         });
     });
