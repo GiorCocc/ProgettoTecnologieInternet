@@ -5,6 +5,7 @@
   },
   "scripts": {
     "signalling": "node signalling/server.js",
-    "http": "http-server -c-1 . -p 8080"
+    "http": "http-server -c-1 . -p 8080",
+    "start": "node signalling/server.js && http-server -c-1 . -p 8080"
   }
 }
