@@ -183,6 +183,11 @@
 <body>
 
 	<h1>Dungeons Castle</h1>
+
+	<h2 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 36px;">
+		The castle has been infected with a demonic force and your army is turning against you. <br> 
+		Dress the role of the hero and protect your kingdom ... fast!
+	</h2>
 	<table style="margin: 0 auto;">
 
 		<tr>
@@ -212,7 +217,7 @@
 					if (room != null) {
 						document.write('<input type="text" value="' + room + '" id="campo_texto" placeholder="Insert the Room..."><br><br>');
 					} else {
-						document.write('<input type="text" value="" id="campo_texto" placeholder="Insert the Room..."><br><br>');
+						document.write('<input type="text" value="" id="campo_texto" placeholder="Insert the Room name..."><br><br>');
 					}
 				</script>
 				
@@ -224,6 +229,22 @@
 		</tr>
 	</table>
 
+	<!-- visualizza l'immagine mov.png, la scritta Move, l'immagine mapc.png e la scritta Attack in una riga -->
+	<table style="margin: 0 auto;">
+		<tr>
+			<td style="text-align: center;">
+				<img src="/img/map.png" style="width: fit-content; height: 150px;">
+			</td>
+			<td style="text-align: center;">
+				<h3 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 24px; color: lightgray">Move</h3>
+			</td>
+			<td style="text-align: center;">
+				<img src="/img/mapc.png" style="width: fit-content; height: 150px;">
+			</td>
+			<td style="text-align: center;">
+				<h3 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 24px; color: lightgray">Attack</h3>
+			</td>
+		</tr>
 
 
 
