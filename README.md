@@ -299,22 +299,23 @@ The information sent by the remote player must be received instantly by the loca
       update: function () {
         this.parent();
     
-    if (this.stateUpdated) {
-          this.stateUpdated = false;
-        } else {
-          this.pos.x += this.dx;
-          this.pos.y += this.dy;
+          if (this.stateUpdated) {
+            this.stateUpdated = false;
+          } else {
+            this.pos.x += this.dx;
+            this.pos.y += this.dy;
 
-          if (this.currentAnim) {
-            this.currentAnim.update();
+            if (this.currentAnim) {
+              this.currentAnim.update();
+            }
           }
-        }
 
-        if(this.dx > 0){
-          this.flip.x = false;
-        } else if(this.dx < 0){
-          this.flip.x = true;
-        }
+          if(this.dx > 0){
+            this.flip.x = false;
+          } else if(this.dx < 0){
+            this.flip.x = true;
+          }
+      }
 ```
 
 This method helps to reduce the negative effects of the connection, since the location processing is done locally. However, this doesn't solve the problem when the connection is particularly slow. There are several workarounds that can be adopted in these cases, such as using compression algorithms to reduce the amount of data transmitted or implementing a local cache to reduce the number of location requests sent to the server. Additionally, it might be worth considering using caching techniques to store the most frequently requested location information in order to reduce response times. Finally, it is important to remember that choosing the best solution depends on the specific requirements of the application and the needs of the users.
