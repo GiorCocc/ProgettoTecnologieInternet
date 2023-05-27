@@ -11,6 +11,7 @@
 	button {
 		border: none;
 		background-color: darkred;
+		/* Colore di sfondo */
 		color: white;
 		padding: 10px 24px;
 		text-align: center;
@@ -30,11 +31,11 @@
 		box-shadow: 0 9px #999, ;
 	}
 
-	#myBtn:focus {
+	#button:focus {
 		outline: none;
 	}
 
-	#myBtn.clicked {
+	#button.clicked {
 		animation: pulse 0.5s;
 	}
 
@@ -95,7 +96,7 @@
 		align-items: center;
 	}
 
-	#immagine {
+	#image {
 		width: 350px;
 		height: 250px;
 	}
@@ -124,43 +125,45 @@
 <head>
 
 	<script>
-		var images = ["fisherKing", "guineyvere", "ladyOfTheLake", "lancelot", "merlin", "arthurPendragon"];
-		var position = 0;
-
-		function up() {
-			position++;
-			if (position >= images.length) {
-				position = 0;
+		// posizione iniziale dell'immagine
+		var immagini = ["fisherKing", "guineyvere", "ladyOfTheLake", "lancelot", "merlin", "arthurPendragon"];
+		var posizione = 0;
+		function avanti() { // funzione per andare avanti
+			posizione++;
+			if (posizione >= immagini.length) {
+				posizione = 0;
 			}
-			document.getElementById("immagine").src = "img/" + images[position] + ".gif";
+			document.getElementById("immagine").src = "img/" + immagini[posizione] + ".gif";
 		}
-
-		function down() {
-			position--;
-			if (position < 0) {
-				position = images.length - 1;
+		function indietro() { // funzione per andare indietro
+			posizione--;
+			if (posizione < 0) {
+				posizione = immagini.length - 1;
 			}
-			document.getElementById("immagine").src = "img/" + images[position] + ".gif";
+			document.getElementById("immagine").src = "img/" + immagini[posizione] + ".gif";
 		}
 
 	</script>
 
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function () {
-			var textField = document.getElementById("campo_texto");
-			var submitButton = document.getElementById("myBtn");
+			var campoTesto = document.getElementById("campo_texto");
+			var pulsanteSubmit = document.getElementById("myBtn");
+			pulsanteSubmit.addEventListener("click", function () {
+				var urlDestinazione = 'entry.html?' + campoTesto.value + "/" + immagini[posizione];
 
-			submitButton.addEventListener("click", function () {
-				var destinationURL = 'entry.html?' + textField.value + "/" + images[position];
-
-				window.location.href = destinationURL;
+				window.location.href = urlDestinazione;
 			});
 
 		});
 
 		function clickTest() {
-			var destinationURL = 'indexOriginal.html?' + textField.value;
-			window.location.href = destinationURL;
+
+			// Crea l'URL di destinazione con il parametro della query string
+			var urlDestinazione = 'indexOriginal.html?' + campoTesto.value;
+
+			// Reindirizza l'utente alla pagina di destinazione
+			window.location.href = urlDestinazione;
 		}
 
 	</script>
@@ -170,34 +173,53 @@
 <body>
 
 	<h1>Dungeons Castle</h1>
-	<table style="margin: 0 auto;">
 
+	<h2 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 36px;">
+		The castle has been infected with a demonic force and your army is turning against you. <br> 
+		Dress the role of the hero and protect your kingdom ... fast!
+	</h2>
+	<table style="margin: 0 auto;">
 		<tr>
 			<td colspan="2">
-				<img id="immagine" src="img/FisherKing.gif">
+				<img id="image" src="img/FisherKing.gif">
 			</td>
 		</tr>
 		<tr>
 			<td style="text-align: left;">
-				<a href="#" onclick="down()"><img id="arrow" src="/img/ArrowSX.png"></a>
+				<a href="#" onclick="indietro()"><img id="arrow" src="/img/ArrowSX.png"></a>
+				<!-- pulsante per andare indietro -->
 			</td>
 			<td style="text-align: right;">
-				<a href="#" onclick="up()"><img id="arrow" src="/img/ArrowDX.png"></a> <!-- pulsante per andare down -->
+				<a href="#" onclick="avanti()"><img id="arrow" src="/img/ArrowDX.png"></a> <!-- pulsante per andare indietro -->
 			</td>
 		</tr>
 	</table>
+
 	<table style="margin: 0 auto;">
 		<tr>
 			<td style="text-align: center;">
 
-				<input type="text" value="" id="campo_texto" placeholder="Insert the Room..."><br><br>
-				<button id="myBtn" style="font-family: Minecraft, sans-serif; ">Enter</button>
+				<!-- if an argument is passed in the url, create a input text box with that argument just filled -->
+				
+				<script type="text/javascript">
+					var url = window.location.href;
+					var room = url.split('?')[1];
+					if (room != null) {
+						document.write('<input type="text" value="' + room + '" id="campo_texto" placeholder="Insert the Room..."><br><br>');
+					} else {
+						document.write('<input type="text" value="" id="campo_texto" placeholder="Insert the Room name..."><br><br>');
+					}
+				</script>
+				
+
+				<!-- <input type="text" value="" id="campo_texto" placeholder="Insert the Room..."><br><br> -->
+				<button id="myBtn" style="font-family: Minecraft, sans-serif; ">Enter</button> 
 
 			</td>
 		</tr>
 	</table>
 
-
+	<!-- visualizza l'immagine mov.png, la scritta Move, l'immagine mapc.png e la scritta Attack in una riga -->
 	<table style="margin: 0 auto;">
 		<tr>
 			<td style="text-align: center;">
