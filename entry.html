@@ -12,8 +12,9 @@
 			margin: 0;
 			padding: 0;
 			font-size: 12pt;
-			
+
 		}
+
 		#canvas {
 			position: absolute;
 			left: 0;
@@ -24,31 +25,31 @@
 		}
 	</style>
 
-<script type="text/javascript">
-	var room0 = ""+window.location.search.split("/")[0];
-	var room1 = ""+window.location.search.split("/")[1];
-	
-	if(!window.location.search || room0 == "?"){
-		
-		window.location.search =Math.random().toString(36).substr(2, 5)+"/"+room1; // location search è la query string dell'url (es: ?roomName)
-		var roomName =window.location.search; 
-	}
-	else{
-		var roomName =window.location.search;
-		
-	}
-	
-	
-</script>
+	<script type="text/javascript">
+		var room = "" + window.location.search.split("/")[0];
+		var character = "" + window.location.search.split("/")[1];
+
+		if (!window.location.search || room == "?") {
+
+			window.location.search = Math.random().toString(36).substr(2, 5) + "/" + character; // location search is the room name
+			var roomName = window.location.search;
+		}
+		else {
+			var roomName = window.location.search;
+		}
+
+
+	</script>
 
 	<script type="text/javascript" src="lib/impact/impact.js"></script>
-	<script type="text/javascript" src="lib/network/socket.io.js"></script>	<!-- Socket.io implementata ultima versione (versione originale socket.io.bak)-->
+	<script type="text/javascript" src="lib/network/socket.io.js"></script>
 	<script type="text/javascript" src="lib/messages.js"></script>
 	<script type="text/javascript" src="lib/game/main.js"></script>
+
 </head>
 
 <body>
-	<!-- <a href="/editor" target="blank_" class="btn">Editor</a> -->
+	<!-- Display the game -->
 	<canvas id="canvas"></canvas>
 </body>
 

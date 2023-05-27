@@ -1,12 +1,22 @@
-var PORT = 8034;
-var MAX_ROOM_USERS = 5;
+/**
+ * Room server
+ * 
+ * Activate the server by running the following command:
+ *  node signalling\server.js
+ * or 
+ *  npm run signalling
+ * 
+ * The server will listen to port 8034 by default.
+ */
 
-var fs = require('fs');
+// change this two variables to your liking
+var PORT = 8034;        // port to listen to
+var MAX_ROOM_USERS = 5; // maximum number of users in a room
+
 var io = require('socket.io')(PORT);
 
 var rooms = {};
 var lastUserId = 0;
-var lastRoomId = 0;
 
 var MessageType = {
   JOIN: 'join',
@@ -29,11 +39,19 @@ var MessageType = {
   ERROR_USER_INITIALIZED: 'error_user_initialized'
 };
 
-function User() { this.userId = ++lastUserId; }
+
+
+function User() {
+  this.userId = ++lastUserId;
+}
+
+
 
 User.prototype = {
-  getId: function() { return this.userId; }
+  getId: function () { return this.userId; }
 };
+
+
 
 function Room(name) {
   this.roomName = name;
@@ -41,54 +59,77 @@ function Room(name) {
   this.sockets = {};
 }
 
+
+
 Room.prototype = {
-  getName: function() {
-    return this.roomName;
+
+  getRoomName: function () { return this.roomName; },
+
+
+
+  getUsers: function () { return this.users; },
+
+
+
+  getUserById: function (id) {
+    return this.users.find(function (user) {
+      return user.getId() === id;
+    });
   },
 
-  getUsers: function() {
-    return this.users;
-  },
 
-  getUserById: function(id) {
-    return this.users.find(function(user) { return user.getId() === id; });
-  },
 
-  numUsers: function() {
-    return this.users.length;
-  },
+  numUsers: function () { return this.users.length; },
 
-  isEmpty: function() {
-    return this.users.length === 0;
-  },
 
-  addUser: function(user, socket) {
+
+  isEmpty: function () { return this.users.length === 0; },
+
+
+
+  addUser: function (user, socket) {
     this.users.push(user);
     this.sockets[user.getId()] = socket;
   },
 
-  removeUser: function(id) {
-    this.users = this.users.filter(function(user) { return user.getId() !== id; });
+
+
+  removeUser: function (id) {
+    this.users = this.users.filter(function (user) {
+      return user.getId() !== id;
+    });
+
     delete this.sockets[id];
   },
 
-  sendTo: function(user, message, data) {
+
+
+  sendToUser: function (user, message, data) {
     var socket = this.sockets[user.getId()];
     socket.emit(message, data);
   },
 
-  sendToId: function(userId, message, data) {
-    return this.sendTo(this.getUserById(userId), message, data);
+
+
+  sendToUserById: function (userId, message, data) {
+    return this.sendToUser(this.getUserById(userId), message, data);
   },
 
-  broadcastFrom: function(fromUser, message, data) {
-    this.users.forEach(function(user) {
+
+
+  broadcastMessageFromUser: function (fromUser, message, data) {
+    this.users.forEach(function (user) {
       if (user.getId() !== fromUser.getId()) {
-        this.sendTo(user, message, data);
+        this.sendToUser(user, message, data);
       }
     }, this);
   }
+
+
 };
+
+
+
 
 // socket
 function handleSocket(socket) {
@@ -101,17 +142,21 @@ function handleSocket(socket) {
   socket.on(MessageType.ICE_CANDIDATE, onIceCandidate);
   socket.on(MessageType.DISCONNECT, onLeave);
 
+
+
   function onJoin(joinData) {
     // Somehow sent join request twice?
     if (user !== null || room !== null) {
-      room.sendTo(user, MessageType.ERROR_USER_INITIALIZED);
+      room.sendToUser(user, MessageType.ERROR_USER_INITIALIZED);
       return;
     }
 
-    // Let's get a room, or create if none still exists
+    // Get a room or create a new one if the room name is not specified
     room = getOrCreateRoom(joinData.roomName);
+
+    // Check if the room is full
     if (room.numUsers() >= MAX_ROOM_USERS) {
-      room.sendTo(user, MessageType.ERROR_ROOM_IS_FULL);
+      room.sendToUser(user, MessageType.ERROR_ROOM_IS_FULL);
       return;
     }
 
@@ -119,28 +164,25 @@ function handleSocket(socket) {
     room.addUser(user = new User(), socket);
 
     // Send room info to new user
-    room.sendTo(user, MessageType.ROOM, {
+    room.sendToUser(user, MessageType.ROOM, {
       userId: user.getId(),
-      roomName: room.getName(),
+      roomName: room.getRoomName(),
       users: room.getUsers()
     });
 
     // Notify others of a new user joined
-    room.broadcastFrom(user, MessageType.USER_JOIN, {
+    room.broadcastMessageFromUser(user, MessageType.USER_JOIN, {
       userId: user.getId(),
       users: room.getUsers()
     });
 
-    console.log('User %s joined room %s. Users in room: %d', user.getId(), room.getName(), room.numUsers());
+    console.log('User %s joined room %s. Users in room: %d', user.getId(), room.getRoomName(), room.numUsers());
   }
+
+
 
   function getOrCreateRoom(name) {
     var room;
-
-    // if the room name is not specified, create a new one
-    if (!name) {
-      name =  ++lastRoomId + '_room';
-    }
 
     // if the room does not exist, create a new one
     if (!rooms[name]) {
@@ -151,37 +193,52 @@ function handleSocket(socket) {
     return rooms[name];
   }
 
+
+
+  // When a user leaves the room
   function onLeave() {
-    if (room === null) return;
+    // if there is no room, do nothing
+    if (room === null)
+      return;
 
     room.removeUser(user.getId());  // remove user from room
 
-    console.log('User %d left room %s. Users in room: %d', user.getId(), room.getName(), room.numUsers());
+    console.log('User %d left room %s. Users in room: %d', user.getId(), room.getRoomName(), room.numUsers());
 
     // if there are no users left, the room is no longer needed
     if (room.isEmpty()) {
-      console.log('Room is empty - dropping room %s', room.getName());
-      delete rooms[room.getName()];
+      console.log('Room is empty - room %s will be deleted', room.getRoomName());
+      delete rooms[room.getRoomName()];
     }
 
     // notify others of a user left
-    room.broadcastFrom(user, MessageType.USER_LEAVE, { userId: user.getId() });
+    room.broadcastMessageFromUser(user, MessageType.USER_LEAVE, {
+      userId: user.getId()
+    });
   }
 
+
+
+  // When a user sends an SDP message
   function onSdp(message) {
-    room.sendToId(message.userId, MessageType.SDP, {
+    room.sendToUserById(message.userId, MessageType.SDP, {
       userId: user.getId(),
       sdp: message.sdp
     });
   }
 
+
+
+  // When a user sends an ICE candidate message
   function onIceCandidate(message) {
-    room.sendToId(message.userId, MessageType.ICE_CANDIDATE, {
+    room.sendToUserById(message.userId, MessageType.ICE_CANDIDATE, {
       userId: user.getId(),
       candidate: message.candidate
     });
   }
 }
+
+
 
 io.on('connection', handleSocket);
 console.log('Running room server on port %d', PORT);
