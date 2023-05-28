@@ -11,30 +11,39 @@
 	button {
 		border: none;
 		background-color: darkred;
+		/* Colore di sfondo */
 		color: white;
 		padding: 10px 24px;
+		/* Spazio interno */
 		text-align: center;
+		/* Allinea il testo al centro */
 		text-decoration: none;
 		display: inline-block;
 		font-size: 16px;
 		margin: 4px 2px;
 		cursor: pointer;
 		border-radius: 10px;
+		/* Arrotonda gli angoli */
 		box-shadow: 0 9px #999;
+		/* Ombra inferiore */
 	}
 
 	button:hover {
+		/* Colore di sfondo scuro quando passi il mouse sopra */
 		box-shadow: 0 6px #666;
+		/* Ombra inferiore più scura */
 		transform: translateY(3px);
+		/* Trasla verso il basso per creare l'effetto 3D */
 		background-color: #4CAF50;
 		box-shadow: 0 9px #999, ;
+		/* Adding a white box-shadow when hovering*/
 	}
 
-	#button:focus {
+	#myBtn:focus {
 		outline: none;
 	}
 
-	#button.clicked {
+	#myBtn.clicked {
 		animation: pulse 0.5s;
 	}
 
@@ -80,6 +89,7 @@
 
 
 	img {
+
 		width: 150px;
 		height: 150px;
 	}
@@ -91,10 +101,12 @@
 
 	table {
 		position: relative;
+		/* posizione relativa per spostare la tabella */
+
 		align-items: center;
 	}
 
-	#image {
+	#immagine {
 		width: 350px;
 		height: 250px;
 	}
@@ -109,6 +121,8 @@
 	}
 
 	input[type=text] {
+		/* spostare input al centro */
+
 		padding: 10px;
 		border: solid #ccc;
 		text-align: center;
@@ -116,53 +130,50 @@
 		font-family: Minecraft, sans-serif;
 		color: #555;
 		width: 300px;
+
 	}
 </style>
 
 <head>
 
 	<script>
-		var images = ["fisherKing", "guineyvere", "ladyOfTheLake", "lancelot", "merlin", "arthurPendragon"];
-		var position = 0;
-
-		function up() {
-			position++;
-
-			if (position >= images.length) {
-				position = 0;
+		// posizione iniziale dell'immagine
+		var immagini = ["fisherKing", "guineyvere", "ladyOfTheLake", "lancelot", "merlin", "arthurPendragon"];
+		var posizione = 0;
+		function avanti() { // funzione per andare avanti
+			posizione++;
+			if (posizione >= immagini.length) {
+				posizione = 0;
 			}
-
-			document.getElementById("image").src = "img/" + images[position] + ".gif";
+			document.getElementById("immagine").src = "img/" + immagini[posizione] + ".gif";
 		}
-
-		function down() {
-			position--;
-
-			if (position < 0) {
-				position = images.length - 1;
+		function indietro() { // funzione per andare indietro
+			posizione--;
+			if (posizione < 0) {
+				posizione = immagini.length - 1;
 			}
-
-			document.getElementById("image").src = "img/" + images[position] + ".gif";
+			document.getElementById("immagine").src = "img/" + immagini[posizione] + ".gif";
 		}
 
 	</script>
 
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function () {
-			var textField = document.getElementById("text_field");
-			var submitButton = document.getElementById("button");
+			var campoTesto = document.getElementById("campo_texto");
+			var pulsanteSubmit = document.getElementById("myBtn");
+			pulsanteSubmit.addEventListener("click", function () {
+				var urlDestinazione = 'entry.html?' + campoTesto.value + "/" + immagini[posizione];
 
-			submitButton.addEventListener("click", function () {
-				var destURL = 'entry.html?' + textField.value + "/" + images[position];
-
-				window.location.href = destURL;
+				window.location.href = urlDestinazione;
 			});
-
 		});
-
 		function clickTest() {
-			var destURL = 'indexOriginal.html?' + textField.value;
-			window.location.href = destURL;
+
+			// Crea l'URL di destinazione con il parametro della query string
+			var urlDestinazione = 'indexOriginal.html?' + campoTesto.value;
+
+			// Reindirizza l'utente alla pagina di destinazione
+			window.location.href = urlDestinazione;
 		}
 
 	</script>
@@ -174,23 +185,23 @@
 	<h1>Dungeons Castle</h1>
 
 	<h2 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 36px;">
-		The castle has been infected with a demonic force and your army is turning against you. <br>
+		The castle has been infected with a demonic force and your army is turning against you. <br> 
 		Dress the role of the hero and protect your kingdom ... fast!
 	</h2>
-
 	<table style="margin: 0 auto;">
 
 		<tr>
 			<td colspan="2">
-				<img id="image" src="img/FisherKing.gif">
+				<img id="immagine" src="img/FisherKing.gif">
 			</td>
 		</tr>
 		<tr>
 			<td style="text-align: left;">
-				<a href="#" onclick="down()"><img id="arrow" src="/img/ArrowSX.png"></a>
+				<a href="#" onclick="indietro()"><img id="arrow" src="/img/ArrowSX.png"></a>
+				<!-- pulsante per andare indietro -->
 			</td>
 			<td style="text-align: right;">
-				<a href="#" onclick="up()"><img id="arrow" src="/img/ArrowDX.png"></a>
+				<a href="#" onclick="avanti()"><img id="arrow" src="/img/ArrowDX.png"></a> <!-- pulsante per andare indietro -->
 			</td>
 		</tr>
 	</table>
@@ -198,13 +209,27 @@
 		<tr>
 			<td style="text-align: center;">
 
-				<input type="text" value="" id="text_field" placeholder="Insert the Room..."><br><br>
-				<button id="button" style="font-family: Minecraft, sans-serif; ">Enter</button>
+				<!-- if an argument is passed in the url, create a input text box with that argument just filled -->
+				
+				<script type="text/javascript">
+					var url = window.location.href;
+					var room = url.split('?')[1];
+					if (room != null) {
+						document.write('<input type="text" value="' + room + '" id="campo_texto" placeholder="Insert the Room..."><br><br>');
+					} else {
+						document.write('<input type="text" value="" id="campo_texto" placeholder="Insert the Room name..."><br><br>');
+					}
+				</script>
+				
+
+				<!-- <input type="text" value="" id="campo_texto" placeholder="Insert the Room..."><br><br> -->
+				<button id="myBtn" style="font-family: Minecraft, sans-serif; ">Enter</button> 
 
 			</td>
 		</tr>
 	</table>
 
+	<!-- visualizza l'immagine mov.png, la scritta Move, l'immagine mapc.png e la scritta Attack in una riga -->
 	<table style="margin: 0 auto;">
 		<tr>
 			<td style="text-align: center;">
@@ -217,11 +242,10 @@
 				<img src="/img/mapc.png" style="width: fit-content; height: 150px;">
 			</td>
 			<td style="text-align: center;">
-				<h3 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 24px; color: lightgray">Attack
-				</h3>
+				<h3 style="font-family: Minecraft, sans-serif; text-align: center; font-size: 24px; color: lightgray">Attack</h3>
 			</td>
 		</tr>
-	</table>
+
 
 
 </body>
