@@ -2,21 +2,107 @@
 
 Multiplayer RPG video game based on WebRTC and [ImpactJS](https://impactjs.com/) for the Internet Technologies course of the University of Parma created by [Giorgio Coccapani]( https://github.com/GiorCocc ) (serial number 317280) and [Riccardo Mazza](https://github.com/sirMallet ) (serial number 321655).
 
+## Features
+
+- **Real-time Multiplayer**: Support for up to 5 players in the same game room
+- **Peer-to-Peer Networking**: Direct communication between players using WebRTC technology
+- **Multiple Character Classes**: Choose from 6 different characters including Arthur Pendragon, Merlin, King Fisher, Lancelot, Guinevere, and The Lady of the Lake
+- **Dynamic Gameplay**: Collect items, engage in combat, and explore a medieval castle environment
+- **Cross-Platform Compatibility**: Runs in any modern web browser with WebRTC support
+- **Room-based Matchmaking**: Create or join game rooms with custom names
+- **Real-time State Synchronization**: Player positions, movements, and actions are synchronized across all clients
+- **Item Collection System**: Three types of collectible items (Life, Sword, Bonus) with different effects
+- **Combat System**: Sword-based combat with usage limits and regeneration mechanics
+- **Respawn System**: Automatic respawning after player death with random positioning
+
 ## Index
 
 - [Dungeon Castle](#dungeon-castle)
   - [Index](#index)
+  - [Features](#features)
+  - [System Requirements](#system-requirements)
+  - [Technologies Used](#technologies-used)
   - [Project structure](#project-structure)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Step-by-step Installation](#step-by-step-installation)
+    - [Development Setup](#development-setup)
   - [Structure of the game](#structure-of-the-game)
     - [Starting the game](#starting-the-game)
     - [The game](#the-game)
     - [Game commands](#game-commands)
     - [Adding new players](#adding-new-players)
-  - [Installation](#installation)
-  - [Implementation](#implementation)
+  - [Technical Architecture](#technical-architecture)
     - [Signaling server](#signaling-server)
     - [Information exchanged between players](#information-exchanged-between-players)
+    - [Game Engine Architecture](#game-engine-architecture)
+    - [Networking Architecture](#networking-architecture)
+  - [Troubleshooting](#troubleshooting)
+  - [Known Issues and Limitations](#known-issues-and-limitations)
+  - [Contributing](#contributing)
+  - [License](#license)
   - [References and credits](#references-and-credits)
+
+## System Requirements
+
+### Minimum Requirements
+
+- **Operating System**: Windows 10, macOS 10.14, or Ubuntu 18.04 (or equivalent Linux distribution)
+- **Node.js**: Version 12.0 or higher
+- **npm**: Version 6.0 or higher (usually comes with Node.js)
+- **Web Browser**: 
+  - Chrome 60+ (recommended)
+  - Firefox 55+
+  - Safari 11+
+  - Edge 79+
+- **RAM**: At least 4GB (8GB recommended for development)
+- **Network**: Stable internet connection for signaling server, WiFi network for local P2P gameplay
+
+### Browser Requirements
+
+The game requires a modern web browser with support for:
+- **WebRTC**: For peer-to-peer communication
+- **WebAudio API**: For game sounds and music
+- **Canvas API**: For game rendering
+- **WebSockets**: For signaling server communication
+- **ES6 Features**: Arrow functions, promises, and modern JavaScript syntax
+
+### Development Requirements
+
+For development and contributing to the project:
+- **Git**: For version control
+- **Code Editor**: VS Code, WebStorm, or similar with JavaScript support
+- **Browser Developer Tools**: For debugging and testing
+
+## Technologies Used
+
+This project leverages several key technologies and libraries:
+
+### Core Technologies
+- **[Node.js](https://nodejs.org/)**: Server-side JavaScript runtime for the signaling server
+- **[WebRTC](https://webrtc.org/)**: Real-time peer-to-peer communication protocol
+- **HTML5 Canvas**: For game rendering and graphics
+- **JavaScript ES6+**: Modern JavaScript features and syntax
+
+### Game Engine and Libraries
+- **[ImpactJS](https://impactjs.com/)**: 2D game engine for HTML5 canvas
+- **[Impact++](https://collinhover.github.io/impactplusplus/)**: Extended library for ImpactJS with additional features and improvements
+- **Weltmeister**: Level editor included with ImpactJS for creating game maps
+
+### Networking Libraries
+- **[Socket.io](https://socket.io/)**: Real-time bidirectional event-based communication for the signaling server
+- **[http-server](https://www.npmjs.com/package/http-server)**: Simple HTTP server for serving the game files
+
+### Development Tools
+- **npm**: Package manager for Node.js dependencies
+- **Git**: Version control system
+
+### Browser APIs Used
+- **WebRTC RTCPeerConnection**: For establishing P2P connections
+- **WebRTC RTCDataChannel**: For sending game data between peers
+- **WebAudio API**: For game sound effects and music
+- **Canvas 2D API**: For game graphics rendering
+- **WebSocket API**: For signaling server communication
 
 ## Project structure
 
@@ -24,44 +110,85 @@ The project has the following structure:
 
 ```text
 .
-├── lib
-│   ├── game
-│   │   ├── abilities
-│   │   │   ├── weaponDamage.js
-│   │   ├── entities
-│   │   │   ├── player.js
-│   │   │   └── remote-player.js
-│   │   │   └── weapon.js
-│   │   │   └── remote-weapon.js
-|   |   |   └── ...
-│   │   ├── levels
-│   │   │   ├── testR.js
-│   │   │   └── ...
-│   │   ├── ui
-│   │   │   ├── healthBar.js
-│   │   │   ├── usageBar.js
-│   │   │   └── ...
-│   │   ├── main.js
-│   │   └── events.js
-│   ├── impact
-│   ├── plusplus
-│   ├── weltmeister
-│   ├── network
-│   │   ├── peer-connection.js
-│   │   ├── room-connection.js
-│   │   └── ...
-│   ├── messages.js
-├── media
-├── img
-├── index.html
-├── entry.html
-└── ...
+├── lib/                          # Core game libraries and modules
+│   ├── game/                     # Game-specific code and logic
+│   │   ├── abilities/            # Game abilities and special powers
+│   │   │   └── weaponDamage.js   # Weapon damage calculation system
+│   │   ├── entities/             # Game entities (players, items, weapons)
+│   │   │   ├── player.js         # Main player entity and logic
+│   │   │   ├── remote-player.js  # Remote player representation and synchronization
+│   │   │   ├── weapon.js         # Local player weapon entity
+│   │   │   ├── remote-weapon.js  # Remote player weapon synchronization
+│   │   │   ├── damage.js         # Damage system and effects
+│   │   │   ├── item-blue.js      # Life restoration items
+│   │   │   ├── item-red.js       # Sword usage restoration items
+│   │   │   └── item-yellow.js    # Bonus items (life + sword usage)
+│   │   ├── levels/               # Game levels and maps
+│   │   │   ├── testR.js          # Main game level definition
+│   │   │   └── ...               # Additional level files
+│   │   ├── ui/                   # User interface components
+│   │   │   ├── healthBar.js      # Player health display
+│   │   │   ├── usageBar.js       # Weapon usage counter display
+│   │   │   ├── copyUrlButton.js  # Share game room URL functionality
+│   │   │   ├── informations.js   # Game information displays
+│   │   │   └── label.js          # Text label UI component
+│   │   ├── main.js               # Main game initialization and loop
+│   │   └── events.js             # Game event handling system
+│   ├── impact/                   # ImpactJS game engine core files
+│   │   ├── game.js               # Core game class and functionality
+│   │   ├── entity.js             # Base entity class
+│   │   ├── system.js             # System and platform abstraction
+│   │   ├── loader.js             # Asset loading system
+│   │   ├── input.js              # Input handling (keyboard, mouse)
+│   │   ├── sound.js              # Audio system
+│   │   ├── timer.js              # Game timing and animation
+│   │   └── ...                   # Additional core engine files
+│   ├── plusplus/                 # Impact++ extension library
+│   │   └── ...                   # Extended features and improvements
+│   ├── weltmeister/              # Level editor for creating game maps
+│   │   └── ...                   # Map editing tools and interface
+│   ├── network/                  # Networking and P2P communication
+│   │   ├── peer-connection.js    # WebRTC peer connection management
+│   │   ├── room-connection.js    # Game room connection handling
+│   │   └── socket.io.js          # Socket.io client library
+│   └── messages.js               # Message types and communication protocols
+├── media/                        # Game assets and multimedia resources
+│   ├── sprites/                  # Character and entity sprite sheets
+│   ├── tiles/                    # Environment and terrain tiles
+│   ├── weapons/                  # Weapon graphics and animations
+│   ├── *.png                     # Image files (sprites, tiles, UI elements)
+│   ├── *.ogg                     # Audio files (music and sound effects)
+│   └── *.font.png                # Bitmap fonts for game text
+├── img/                          # Website and documentation images
+│   ├── index.png                 # Main menu screenshot
+│   ├── gameScreen.png            # Gameplay screenshot
+│   └── ...                       # Additional screenshots and graphics
+├── signalling/                   # WebRTC signaling server
+│   └── server.js                 # Node.js signaling server implementation
+├── index.html                    # Character selection and room creation page
+├── entry.html                    # Main game canvas and gameplay page
+├── weltmeister.html              # Level editor interface
+├── package.json                  # Node.js dependencies and scripts
+├── package-lock.json             # Locked dependency versions
+├── favicon.ico                   # Website favicon
+├── .gitignore                    # Git ignore patterns
+└── README.md                     # Project documentation (this file)
 ```
 
-- ` lib `: folder containing all game resources (levels, entities, interface elements, etc.)
-- `media`: folder containing all multimedia resources (images, sounds, etc.) used in the game
-- ` img `: folder containing the images used on the site
-- `index.html`: site's main `html` file
+### Key Directories Explained
+
+- **`lib/`**: Contains all game libraries and modules
+  - **`game/`**: Game-specific logic including entities, UI components, and level definitions
+  - **`impact/`**: Core ImpactJS game engine providing fundamental game functionality
+  - **`plusplus/`**: Extended features and improvements over base ImpactJS
+  - **`network/`**: WebRTC and networking implementation for multiplayer functionality
+  - **`weltmeister/`**: Built-in level editor for creating and modifying game maps
+
+- **`media/`**: All multimedia assets including sprites, sounds, textures, and fonts
+
+- **`signalling/`**: Backend signaling server for WebRTC peer discovery and connection establishment
+
+- **`*.html`**: Frontend pages for different aspects of the game (menu, gameplay, level editing)
 
 ## Structure of the game
 
@@ -116,23 +243,238 @@ Each remote player on the screen is represented by a soldier from your army (Lan
 
 ## Installation
 
-In order to install the game you need to install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/). Among the necessary packages for the game we find:
+### Prerequisites
 
-- [ImpactJS](https://impactjs.com/): game development environment that comes with all the basic libraries and an editor for creating levels and maps
-- [plusplus](https://collinhover.github.io/impactplusplus/): set of additional libraries for ImpactJS that allow you to add new features to the game
-- [socket.io]( https://socket.io/): library for real-time communication between client and server
-- [http- server]( https://www.npmjs.com/package/http-server): http server for peer-to-peer mode
+Before installing and running Dungeon Castle, ensure you have the following software installed on your system:
 
-To start the game you need to run the following commands in two different terminals:
+#### 1. Node.js and npm
 
+**Windows:**
+1. Download Node.js from [nodejs.org](https://nodejs.org/)
+2. Run the installer and follow the setup wizard
+3. Verify installation by opening Command Prompt and running:
+   ```cmd
+   node --version
+   npm --version
+   ```
+
+**macOS:**
+1. Download Node.js from [nodejs.org](https://nodejs.org/) or install via Homebrew:
+   ```bash
+   brew install node
+   ```
+2. Verify installation:
+   ```bash
+   node --version
+   npm --version
+   ```
+
+**Linux (Ubuntu/Debian):**
 ```bash
-node signalling/server.js
-http-server -c-1 . -p <port>
+# Update package index
+sudo apt update
+
+# Install Node.js and npm
+sudo apt install nodejs npm
+
+# Verify installation
+node --version
+npm --version
 ```
 
-where instead of `<port>` the port on which you want to start the http server must be inserted. In order to play in peer-to-peer mode both players must be connected under the same wifi network and connected to the ip address of the player who started the http server. To find out your ip address , you can use the command ` ipconfig ` on Windows or ` ifconfig ` on Linux.
+#### 2. Git (Optional but recommended for development)
 
-Within the `signaling /server.js` file it is possible to change the port on which you want to start the signaling server which by default is set to port 8034.
+**Windows:** Download from [git-scm.com](https://git-scm.com/)
+
+**macOS:** 
+```bash
+brew install git
+```
+
+**Linux:**
+```bash
+sudo apt install git
+```
+
+### Step-by-step Installation
+
+#### Option 1: Download and Run (Recommended for Players)
+
+1. **Download the project:**
+   - Download the ZIP file from the GitHub repository
+   - Extract it to your desired location
+
+2. **Navigate to the project directory:**
+   ```bash
+   cd ProgettoTecnologieInternet
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+4. **Start the game servers:**
+   
+   **Option A: Using npm scripts (Recommended)**
+   ```bash
+   # In first terminal - Start signaling server
+   npm run signalling
+   
+   # In second terminal - Start HTTP server
+   npm run http
+   ```
+   
+   **Option B: Manual startup**
+   ```bash
+   # In first terminal - Start signaling server
+   node signalling/server.js
+   
+   # In second terminal - Start HTTP server on port 8080
+   npx http-server -c-1 . -p 8080
+   ```
+
+5. **Access the game:**
+   - Open your web browser
+   - Go to `http://localhost:8080`
+   - For local network play, use your IP address instead of localhost
+
+#### Option 2: Clone from Git (Recommended for Developers)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/GiorCocc/ProgettoTecnologieInternet.git
+   cd ProgettoTecnologieInternet
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Follow steps 4-5 from Option 1**
+
+### Development Setup
+
+For developers who want to modify or contribute to the game:
+
+#### 1. Development Environment Setup
+
+1. **Install a code editor** (recommended):
+   - [Visual Studio Code](https://code.visualstudio.com/)
+   - [WebStorm](https://www.jetbrains.com/webstorm/)
+   - [Sublime Text](https://www.sublimetext.com/)
+
+2. **Install useful VS Code extensions** (if using VS Code):
+   - JavaScript (ES6) code snippets
+   - HTML CSS Support
+   - Live Server
+   - GitLens
+
+#### 2. Development Workflow
+
+1. **Start development servers:**
+   ```bash
+   # Terminal 1: Signaling server with auto-restart
+   npm run signalling
+   
+   # Terminal 2: HTTP server
+   npm run http
+   ```
+
+2. **Access the level editor:**
+   - Navigate to `http://localhost:8080/weltmeister.html`
+   - Create and modify game levels using the built-in editor
+
+3. **Development tips:**
+   - Use browser developer tools for debugging
+   - Check the browser console for WebRTC connection logs
+   - Monitor network traffic in the Network tab
+   - Use the Sources tab for JavaScript debugging
+
+#### 3. Custom Configuration
+
+**Signaling Server Port Configuration:**
+Edit `signalling/server.js` to change the default port (8034):
+```javascript
+var PORT = 8034; // Change this to your desired port
+```
+
+**HTTP Server Port Configuration:**
+Modify the npm script in `package.json` or run manually:
+```bash
+npx http-server -c-1 . -p YOUR_PORT
+```
+
+**Maximum Room Users:**
+Edit `signalling/server.js` to change the player limit:
+```javascript
+var MAX_ROOM_USERS = 5; // Change this to your desired limit
+```
+
+### Network Configuration for Multiplayer
+
+#### Local Network Play (Same WiFi)
+
+1. **Find your IP address:**
+   
+   **Windows:**
+   ```cmd
+   ipconfig
+   ```
+   Look for "IPv4 Address" under your active network adapter
+   
+   **macOS/Linux:**
+   ```bash
+   ifconfig
+   ```
+   Look for "inet" address under your active network interface
+
+2. **Share your game:**
+   - Start both servers on your machine
+   - Share your IP address with other players
+   - Other players access: `http://YOUR_IP:8080`
+   - All players must be on the same WiFi network
+
+#### Firewall Configuration
+
+Ensure the following ports are open in your firewall:
+- **Port 8034**: Signaling server (WebSocket connections)
+- **Port 8080**: HTTP server (or your chosen port)
+- **Random UDP ports**: WebRTC data channels (automatically handled by most firewalls)
+
+### Troubleshooting Installation
+
+**Common Issues:**
+
+1. **Node.js/npm not found:**
+   - Ensure Node.js is properly installed and added to PATH
+   - Restart your terminal/command prompt after installation
+
+2. **Port already in use:**
+   ```bash
+   # Find process using the port (Linux/macOS)
+   lsof -i :8080
+   
+   # Kill the process or choose a different port
+   npm run http -- -p 3000
+   ```
+
+3. **npm install fails:**
+   ```bash
+   # Clear npm cache
+   npm cache clean --force
+   
+   # Delete node_modules and reinstall
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
+
+4. **WebRTC connection issues:**
+   - Ensure both players are on the same network
+   - Check that firewall allows the applications
+   - Try disabling antivirus temporarily for testing
+   - Use Chrome for best WebRTC compatibility
 
 ## Implementation
 
