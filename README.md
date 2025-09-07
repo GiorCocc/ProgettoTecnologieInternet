@@ -443,17 +443,6 @@ Please adhere to the existing code style and conventions. When in doubt, make yo
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for full details.
 
-```
-MIT License
-
-Copyright (c) 2024 Giorgio Coccapani and Riccardo Mazza
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-*(The full license text is included in the original file.)*
-
 ### Third-Party Licenses
 
 -   **Game Engine**: The project uses **ImpactJS** (Commercial License) and **Impact++** (MIT License).
